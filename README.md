@@ -1,8 +1,6 @@
 # Trailblazer::Rspec
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/trailblazer/rspec`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+RSpec Matchers for Trailblazer
 
 ## Installation
 
@@ -16,13 +14,58 @@ And then execute:
 
     $ bundle
 
-Or install it yourself as:
+## Configuration
 
-    $ gem install trailblazer-rspec
+```ruby
+# spec_helper.rb
+RSpec.configure do |config|
+  # Include Trailblazer::RSpec::Matchers for operation tests
+  config.include Trailblazer::RSpec::Matchers, type: :operation
+end
+```
 
-## Usage
+## Examples
 
-TODO: Write usage instructions here
+```ruby
+class Post < ActiveRecord::Base
+  class Index < Trailblazer::Operation
+    include Collection
+    include CRUD
+    model Post
+
+    def model!(params)
+      Post.where(forum_id: params[:forum_id])
+    end
+  end
+
+  class Show < Trailblazer::Operation
+    include CRUD
+    model Post
+
+    def model!(params)
+      Post.find_by!(forum_id: params[:forum_id], id: params[:id])
+    end
+  end
+end
+```
+
+```ruby
+RSpec.describe Post::Index, type: :operation do
+  it { is_expected.to be_a_trailblazer_operation }
+  it { is_expected.to use_model Post }
+  it do
+    is_expected.to present_model.with_params(forum_id: 1).from_model(Post).wich_receive(:where).with(forum_id: 1)
+  end
+end
+
+RSpec.describe Post::Show, type: :operation do
+  it { is_expected.to be_a_trailblazer_operation }
+  it { is_expected.to use_model Post }
+  it do
+    is_expected.to present_model.with_params(forum_id: 1, id: 11).from_model(Post).wich_receive(:find_by!).with(forum_id: 1, id: 11)
+  end
+end
+```
 
 ## Development
 
