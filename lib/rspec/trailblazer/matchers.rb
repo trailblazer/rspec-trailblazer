@@ -3,10 +3,6 @@ module RSpec
     module Matchers
       extend ::RSpec::Matchers::DSL
 
-      matcher :be_a_trailblazer_operation do
-        match { |actual| actual.is_a? Trailblazer::Operation }
-      end
-
       matcher :use_model do |model_class|
         attr_reader :actual
         attr_reader :object
