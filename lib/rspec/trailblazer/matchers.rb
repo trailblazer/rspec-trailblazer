@@ -1,5 +1,5 @@
-module Trailblazer
-  module RSpec
+module RSpec
+  module Trailblazer
     module Matchers
       extend ::RSpec::Matchers::DSL
 

@@ -1,4 +1,4 @@
-# Trailblazer::Rspec
+# Rspec::Trailblazer
 
 RSpec Matchers for Trailblazer
 
@@ -7,7 +7,7 @@ RSpec Matchers for Trailblazer
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'trailblazer-rspec'
+gem 'rspec-trailblazer'
 ```
 
 And then execute:
@@ -19,8 +19,8 @@ And then execute:
 ```ruby
 # spec_helper.rb
 RSpec.configure do |config|
-  # Include Trailblazer::RSpec::Matchers for operation tests
-  config.include Trailblazer::RSpec::Matchers, type: :operation
+  # Include RSpec::Trailblazer::Matchers for operation tests
+  config.include RSpec::Trailblazer::Matchers, type: :operation
 end
 ```
 
@@ -75,5 +75,5 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/trailblazer/trailblazer-rspec.
+Bug reports and pull requests are welcome on GitHub at https://github.com/trailblazer/rspec-trailblazer.
 
