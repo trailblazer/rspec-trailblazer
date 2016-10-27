@@ -6,8 +6,8 @@ require 'rspec/trailblazer/version'
 Gem::Specification.new do |spec|
   spec.name          = "rspec-trailblazer"
   spec.version       = RSpec::Trailblazer::VERSION
-  spec.authors       = ["Timo Schilling"]
-  spec.email         = ["timo@schilling.io"]
+  spec.authors       = ["Timo Schilling", "Nick Sutterer"]
+  spec.email         = ["timo@schilling.io", "apotonick@gmail.com"]
 
   spec.summary       = "RSpec Matchers for Trailblazer"
   spec.homepage      = "https://github.com/trailblazer/rspec-trailblazer"
