@@ -7,8 +7,8 @@ module RSpec
       class Result < SimpleDelegator
         def initialize(result)
           super(result)
-
-          raise "Policy breach: #{result["policy.result"]}" unless result["policy.result"]["valid"]
+          raise "Policy breach: #{result["policy.result"]}" unless result["policy.result"]["success?"]
+          raise "Validation failure: #{result["errors.contract"]}" if result["errors.contract"]
         end
       end
     end
