@@ -19,8 +19,8 @@ And then execute:
 ```ruby
 # spec_helper.rb
 RSpec.configure do |config|
-  # Include RSpec::Trailblazer::Operation::Matchers for operation tests
-  config.include RSpec::Trailblazer::Operation::Matchers, type: :operation
+  # Include RSpec::Trailblazer::Matchers for operation tests
+  config.include RSpec::Trailblazer::Matchers, type: :operation
 end
 ```
 
@@ -28,53 +28,41 @@ end
 
 ```ruby
 class Post < ActiveRecord::Base
-  class Form < Reform::Form
-    property :title
-    property :description
+  class Index < Trailblazer::Operation
+    include Collection
+    include CRUD
+    model Post
+
+    def model!(params)
+      Post.where(forum_id: params[:forum_id])
+    end
   end
 
-  class Create < Trailblazer::Operation
-    step Policy::Pundit(Post::Policy, :create?)
-    failure :log_access_denied, fail_fast: true
+  class Show < Trailblazer::Operation
+    include CRUD
+    model Post
 
-    step Model(Post, :new)
-    step Contract::Build(constant: Form)
-    step Contract::Validate(key: :post)
-    step Contract::Persist()
-
-    def log_access_denied(ctx, **)
-      ctx[:error_msg] = I18n.t('errors.access_denied')
+    def model!(params)
+      Post.find_by!(forum_id: params[:forum_id], id: params[:id])
     end
   end
 end
 ```
 
 ```ruby
-describe Post::Create, type: :operation do
-  # You can define default parameters for an operation using `let(:default_params)`.
-  # These values can be overriden by using `with` helper.
-  let(:default_params) do
-    {
-      current_user: create(:admin),
-      params: { post: { title: 'First Blog', body: 'With some body' } }
-    }
+RSpec.describe Post::Index, type: :operation do
+  it { is_expected.to be_a_trailblazer_operation }
+  it { is_expected.to use_model Post }
+  it do
+    is_expected.to present_model.with_params(forum_id: 1).from_model(Post).wich_receive(:where).with(forum_id: 1)
   end
+end
 
-  it 'fails if user is not authorized' do
-    expect(described_class).to be_failure.with(current_user: create(:non_admin)) do |result|
-      expect(result[:error_msg]).to eq I18n.t('errors.access_denied')
-    end
-  end
-
-  it 'fails if title is blank' do
-    expect(described_class).to be_failure
-      .with(params: { post: { title: nil } }).have_invalid_properties(:title)
-  end
-
-  it 'is successful' do
-    expect(described_class).to be_successful do |result|
-      expect(result[:model].title).to eq 'First Blog'
-    end
+RSpec.describe Post::Show, type: :operation do
+  it { is_expected.to be_a_trailblazer_operation }
+  it { is_expected.to use_model Post }
+  it do
+    is_expected.to present_model.with_params(forum_id: 1, id: 11).from_model(Post).wich_receive(:find_by!).with(forum_id: 1, id: 11)
   end
 end
 ```
