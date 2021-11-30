@@ -1,38 +1,32 @@
+require "trailblazer/test" # FIXME: do we want all of this?
+require "trailblazer/test/assertions"
+require "trailblazer/test/operation/assertions"
+
 module RSpec
-  module Trailblazer
+  module Trailblazer::Test
     module Matchers
-      extend ::RSpec::Matchers::DSL
+      RSpec::Matchers.define :pass_with do |expected|
+        match do |(result, _, kws)|
+          actual_model        = result[:"model"]
+          expected_attributes = Assert.expected_attributes_for(expected, deep_merge: true, **kws)
 
-      matcher :use_model do |model_class|
-        attr_reader :actual
-        attr_reader :object
-
-        description { "have model #{model_class.name}" }
-        match do |object|
-          @object = object
-          @actual = object.class.model_class
-          values_match? actual, model_class
-        end
-        failure_message { |actual| "expect #{object} to have model #{model_class}" }
-        diffable
-      end
-
-      matcher :present_model do
-        description { "present model with params #{params} from model #{model_class} wich receive #{model_receive} with #{model_receive_args}" }
-
-        match do |actual|
-          model = double(:collection)
-          with_args = model_receive_args ? model_receive_args : no_args
-          expect(model_class).to receive(model_receive).with(with_args).and_return(model)
-          actual.present(params || {})
-          expect(actual.model).to eq model
+          RSpec::Matchers::BuiltIn::HaveAttributes.new(expected_attributes).matches?(actual_model)
         end
 
-        chain :from_model, :model_class
-        chain :with_params, :params
-        chain :wich_receive, :model_receive
-        chain :with, :model_receive_args
+        # TODO: failure_message
       end
-    end
+
+      RSpec::Matchers.define :pass do |expected|
+        match do |(result, _)|
+          required_outcome, actual_outcome = Assert.arguments_for_assert_pass(result)
+
+          required_outcome == actual_outcome
+        end
+
+        failure_message do |(result, _)|
+          Assert.error_message_for_assert_pass(result)
+        end
+      end
+    end # Matchers
   end
 end
