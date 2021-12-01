@@ -4,6 +4,7 @@ require "trailblazer/test/operation/assertions"
 
 module RSpec
   module Trailblazer::Test
+    # FIXME: this probably shouldn't be here?
     module PassAndPassWith
       def pass_with(args)
         pass.and _pass_with(args)
@@ -16,6 +17,10 @@ module RSpec
 
     RSpec.configuration.include(PassAndPassWith)
 
+    # Notes
+    # * In the Minitest implementation we use {assert_expose} to compare fields, here we can rely
+    #   on {HaveAttributes}.
+    # * TODO: `let(:operation)` should probably default to {described_class}
     module Matchers
       RSpec::Matchers.define :_pass_with do |expected|
         match do |(result, _, kws)|
@@ -47,9 +52,9 @@ module RSpec
           required_outcome == actual_outcome
         end
 
-        failure_message do |(result, _, kws)|
-          Assert.error_message_for_assert_pass(result, **kws)
-        end
+        # failure_message do |(result, _, kws)|
+        #   Assert.error_message_for_assert_pass(result, **kws)
+        # end
       end
 
       RSpec::Matchers.define :_fail_with_errors do |expected_errors|

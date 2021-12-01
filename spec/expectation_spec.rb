@@ -48,5 +48,9 @@ describe RSpec::Trailblazer do
 
   it "fail" do
     expect(run({title: "", duration: "2.24"})).to fail_with_errors([:title])
+
+  end
+  it "assertion fails" do
+    expect(run({title: "Voice of the Moon", duration: "2.24"})).to fail_with_errors([:title]) # fails
   end
 end
