@@ -45,4 +45,8 @@ describe RSpec::Trailblazer do
 
     expect(run({title: ""})).to pass_with({duration: 144}) # fails
   end
+
+  it "fail" do
+    expect(run({title: "", duration: "2.24"})).to fail_with_errors([:title])
+  end
 end

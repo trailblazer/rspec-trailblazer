@@ -8,6 +8,10 @@ module RSpec
       def pass_with(args)
         pass.and _pass_with(args)
       end
+
+      def fail_with_errors(args)
+        _fail.and _fail_with_errors(args)
+      end
     end
 
     RSpec.configuration.include(PassAndPassWith)
@@ -34,6 +38,28 @@ module RSpec
         failure_message do |(result, _, kws)|
           Assert.error_message_for_assert_pass(result, **kws)
         end
+      end
+
+      RSpec::Matchers.define :_fail do |expected|
+        match do |(result, _)|
+          required_outcome, actual_outcome = Assert.arguments_for_assert_fail(result)
+
+          required_outcome == actual_outcome
+        end
+
+        failure_message do |(result, _, kws)|
+          Assert.error_message_for_assert_pass(result, **kws)
+        end
+      end
+
+      RSpec::Matchers.define :_fail_with_errors do |expected_errors|
+        match do |(result, _, kws)|
+          expected_errors, actual_errors = Assert.arguments_for_assert_contract_errors(result, expected_errors: expected_errors, **kws)
+
+          expected_errors == actual_errors
+        end
+
+        # TODO: failure_message
       end
     end # Matchers
   end
