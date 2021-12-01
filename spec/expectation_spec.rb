@@ -41,6 +41,8 @@ describe RSpec::Trailblazer do
   #:let-key-in-params end
 
   it do
-    expect(run({duration: "2.24"})).to pass.and pass_with({duration: 144})
+    expect(run({duration: "2.24"})).to pass_with({duration: 144})
+
+    expect(run({title: ""})).to pass_with({duration: 144}) # fails
   end
 end

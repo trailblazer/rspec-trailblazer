@@ -4,8 +4,16 @@ require "trailblazer/test/operation/assertions"
 
 module RSpec
   module Trailblazer::Test
+    module PassAndPassWith
+      def pass_with(args)
+        pass.and _pass_with(args)
+      end
+    end
+
+    RSpec.configuration.include(PassAndPassWith)
+
     module Matchers
-      RSpec::Matchers.define :pass_with do |expected|
+      RSpec::Matchers.define :_pass_with do |expected|
         match do |(result, _, kws)|
           actual_model        = result[:"model"]
           expected_attributes = Assert.expected_attributes_for(expected, deep_merge: true, **kws)
@@ -23,8 +31,8 @@ module RSpec
           required_outcome == actual_outcome
         end
 
-        failure_message do |(result, _)|
-          Assert.error_message_for_assert_pass(result)
+        failure_message do |(result, _, kws)|
+          Assert.error_message_for_assert_pass(result, **kws)
         end
       end
     end # Matchers
