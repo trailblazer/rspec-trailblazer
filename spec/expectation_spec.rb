@@ -53,4 +53,12 @@ describe RSpec::Trailblazer do
   it "assertion fails" do
     expect(run({title: "Voice of the Moon", duration: "2.24"})).to fail_with_errors([:title]) # fails
   end
+
+  it "Ctx" do
+    expect(Ctx().inspect).to eq(%{{:params=>{:song=>{:band=>\"Rancid\", :title=>\"Timebomb\"}}}})
+    expect(Ctx(exclude: [:title]).inspect).to eq(%{{:params=>{:song=>{:band=>\"Rancid\"}}}})
+    expect(Ctx(exclude: [:title], default_ctx: {params: {song: {title: "Ruby Soho", band: "NOFX"}}, current_user: "Yogi"}).inspect).to eq(%{{:params=>{:song=>{:band=>\"NOFX\"}}, :current_user=>\"Yogi\"}})
+    # expect(Ctx(exclude: [:title], key_in_params: false).inspect).to eq(%{{:params=>{:song=>{:band=>\"Rancid\"}}}})
+    expect(Ctx({current_user: "Yogi"}).inspect).to eq(%{{:params=>{:song=>{:band=>\"Rancid\", :title=>\"Timebomb\"}}, :current_user=>\"Yogi\"}})
+  end
 end

@@ -52,9 +52,9 @@ module RSpec
           required_outcome == actual_outcome
         end
 
-        # failure_message do |(result, _, kws)|
-        #   Assert.error_message_for_assert_pass(result, **kws)
-        # end
+        failure_message do |(result, _, kws)|
+          Assert.error_message_for_assert_fail_after_call(result, **kws)
+        end
       end
 
       RSpec::Matchers.define :_fail_with_errors do |expected_errors|
