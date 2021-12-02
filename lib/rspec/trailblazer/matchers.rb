@@ -3,7 +3,7 @@ require "trailblazer/test/assertions"
 require "trailblazer/test/operation/assertions"
 
 module RSpec
-  module Trailblazer::Test
+  module Trailblazer
     # FIXME: this probably shouldn't be here?
     module PassAndPassWith
       def pass_with(args)

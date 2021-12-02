@@ -1,5 +1,5 @@
 module RSpec
-  module Trailblazer::Test
+  module Trailblazer
     module Helpers
       # Note that {run} currently returns **an array** of all involved data structures.
       def run(params_fragment, use_wtf=false, **kws)

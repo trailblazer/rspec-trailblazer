@@ -2,7 +2,7 @@ require 'spec_helper'
 
 
 RSpec.configure do |c|
-  c.include RSpec::Trailblazer::Test::Helpers
+  c.include RSpec::Trailblazer::Helpers
 end
 
 describe RSpec::Trailblazer do

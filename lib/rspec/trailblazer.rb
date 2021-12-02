@@ -4,8 +4,6 @@ require "rspec/trailblazer/helpers"
 
 module RSpec
   module Trailblazer
-    module Test
-      Assert = ::Trailblazer::Test::Operation::Assertions::Assert
-    end
+    Assert = ::Trailblazer::Test::Operation::Assertions::Assert
   end
 end
