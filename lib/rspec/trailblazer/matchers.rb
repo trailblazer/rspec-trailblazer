@@ -18,27 +18,41 @@ module RSpec
     RSpec.configuration.include(PassAndPassWith)
 
     # Notes
-    # * In the Minitest implementation we use {assert_expose} to compare fields, here we can rely
-    #   on {HaveAttributes}.
     # * TODO: `let(:operation)` should probably default to {described_class}
     module Matchers
       RSpec::Matchers.define :_pass_with do |expected|
-        match do |(result, _, kws)|
-          actual_model        = result[:"model"]
-          expected_attributes = Assert.expected_attributes_for(expected, deep_merge: true, **kws)
 
-          RSpec::Matchers::BuiltIn::HaveAttributes.new(expected_attributes).matches?(actual_model)
+        match do |(result, _, kws)|
+          actual_model        = result[:model]
+          expected_attributes = Assert.expected_attributes_for(expected, deep_merge: false, **kws)
+        # puts ">>>>>>>>>@@@@@ #{expected_attributes.inspect}"
+
+          # The {HaveAttributes} matcher's error message is not very readable.
+          # RSpec::Matchers::BuiltIn::HaveAttributes.new(expected_attributes).matches?(actual_model)
+          passed, _ = ::Trailblazer::Test::Assertions::Assert.assert_attributes(actual_model, expected_attributes, reader: nil) do |_, last_failed|
+            name, expected_value, actual_value, passed, is_eq, error_msg = last_failed
+
+            @error_msg = %{#{error_msg}: Expected \e[1;31m#{expected_value}\e[0;31m but was \e[1;31m#{actual_value}\e[0;31m}
+          end
+
+          passed
         end
 
-        # TODO: failure_message
+        # TODO: TEST failure_message
+        failure_message do |(result, _, kws)|
+          @error_msg
+        end
       end
 
       RSpec::Matchers.define :pass do |expected|
         match do |(result, _)|
+          # puts result.inspect
           required_outcome, actual_outcome = Assert.arguments_for_assert_pass(result)
 
           required_outcome == actual_outcome
         end
+
+        # supports_block_expectations
 
         failure_message do |(result, _, kws)|
           Assert.error_message_for_assert_pass(result, **kws)

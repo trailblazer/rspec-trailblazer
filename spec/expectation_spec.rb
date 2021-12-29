@@ -43,7 +43,19 @@ describe RSpec::Trailblazer do
   it do
     expect(run({duration: "2.24"})).to pass_with({duration: 144})
 
+    expect { run({duration: "2.24"}) }
+      .to pass
+      .and change { "yo" }.by(1)
+
     expect(run({title: ""})).to pass_with({duration: 144}) # fails
+  end
+
+  it "allows {class} and other weirdo attributes" do
+    expect(run({duration: "2.24"})).to pass_with({duration: 144, class: Trailblazer::Test::Testing::Song})
+  end
+
+  it "FAILS" do
+    expect(run({duration: "2.24"})).to pass_with({duration: 44})
   end
 
   it "fail" do
