@@ -40,14 +40,35 @@ describe RSpec::Trailblazer do
   let(:key_in_params) { :song }
   #:let-key-in-params end
 
-  it do
-    expect(run({duration: "2.24"})).to pass_with({duration: 144})
+  # todo:
+  # test run()
 
+  require "rspec/matchers/fail_matchers"
+  include RSpec::Matchers::FailMatchers
+
+  describe "#pass_with" do
+    it "passes with manual attributes" do
+      expect(run({duration: "2.24"})).to pass_with({duration: 144})
+    end
+
+    it "fails with non-matching manual expected attributes" do
+      expect {
+        expect(run({title: ""})).to pass_with({duration: 144}) # fails
+      }.to fail_with("e;lkjasdf")
+    end
+  end
+
+  it "what" do
+    expect {
+          expect(4).to be_zero
+        }.to fail_with("expected `4.zero?` to be truthy, got false")
+  end
+
+it "fails because Rspec doesn't like me" do
     expect { run({duration: "2.24"}) }
       .to pass
       .and change { "yo" }.by(1)
 
-    expect(run({title: ""})).to pass_with({duration: 144}) # fails
   end
 
   it "allows {class} and other weirdo attributes" do
