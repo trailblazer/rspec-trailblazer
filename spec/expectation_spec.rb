@@ -51,20 +51,42 @@ describe RSpec::Trailblazer do
       expect(run({duration: "2.24"})).to pass_with({duration: 144})
     end
 
-    it "fails with non-matching manual expected attributes" do
+    # DISCUSS: coloring of expected/actual in error msg?
+    it "fails) with non-matching manual expected attributes. FIXME: {assert_exposes} is still called" do
       expect {
         expect(run({title: ""})).to pass_with({duration: 144}) # fails
-      }.to fail_with("e;lkjasdf")
+      }.to fail_with(%{   {Trailblazer::Test::Testing::Song::Operation::Create} failed: \e[33m{:title=>["must be filled"]}\e[0m
+
+...and:
+
+   Property [band] mismatch: Expected "Rancid" but was nil})
+    end
+
+    it "fails) operation passes but expected != actual" do
+      expect {
+        expect(run({title: "Rancid"})).to pass_with({duration: 144}) # fails
+      }.to fail_with(%{Property [title] mismatch: Expected "Timebomb" but was "Rancid"})
     end
   end
 
-  it "what" do
-    expect {
-          expect(4).to be_zero
-        }.to fail_with("expected `4.zero?` to be truthy, got false")
+  describe "#fail_with_errors" do
+    it "fails) because operation passes" do
+      expect {
+        expect(run({title: "Voice of the Moon", duration: "2.24"})).to fail_with_errors([:title])
+      }.to fail_with(%{   {Trailblazer::Test::Testing::Song::Operation::Create} didn't fail, it passed
+
+...and:
+
+   Expected errors [:title] but was []})
+    end
+
+    it "passes" do
+      expect(run({title: "", duration: "2.24"})).to fail_with_errors([:title])
+    end
   end
 
 it "fails because Rspec doesn't like me" do
+  skip "TODO"
     expect { run({duration: "2.24"}) }
       .to pass
       .and change { "yo" }.by(1)
@@ -73,18 +95,6 @@ it "fails because Rspec doesn't like me" do
 
   it "allows {class} and other weirdo attributes" do
     expect(run({duration: "2.24"})).to pass_with({duration: 144, class: Trailblazer::Test::Testing::Song})
-  end
-
-  it "FAILS" do
-    expect(run({duration: "2.24"})).to pass_with({duration: 44})
-  end
-
-  it "fail" do
-    expect(run({title: "", duration: "2.24"})).to fail_with_errors([:title])
-
-  end
-  it "assertion fails" do
-    expect(run({title: "Voice of the Moon", duration: "2.24"})).to fail_with_errors([:title]) # fails
   end
 
   it "Ctx" do

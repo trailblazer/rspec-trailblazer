@@ -7,7 +7,7 @@ module RSpec
     # FIXME: this probably shouldn't be here?
     module PassAndPassWith
       def pass_with(args)
-        pass.and _pass_with(args)
+        pass.and _pass_with(args) # TODO: abort when {pass} fails so we get only one error message. What is a simple thing in Minitest seems to be a lot of work here.
       end
 
       def fail_with_errors(args)
@@ -32,7 +32,7 @@ module RSpec
           passed, _ = ::Trailblazer::Test::Assertions::Assert.assert_attributes(actual_model, expected_attributes, reader: nil) do |_, last_failed|
             name, expected_value, actual_value, passed, is_eq, error_msg = last_failed
 
-            @error_msg = %{#{error_msg}: Expected \e[1;31m#{expected_value}\e[0;31m but was \e[1;31m#{actual_value}\e[0;31m}
+            @error_msg = %{#{error_msg}: Expected #{expected_value.inspect} but was #{actual_value.inspect}}
           end
 
           passed
@@ -73,9 +73,13 @@ module RSpec
 
       RSpec::Matchers.define :_fail_with_errors do |expected_errors|
         match do |(result, _, kws)|
-          expected_errors, actual_errors = Assert.arguments_for_assert_contract_errors(result, expected_errors: expected_errors, **kws)
+          @expected_errors, @actual_errors = Assert.arguments_for_assert_contract_errors(result, expected_errors: expected_errors, **kws)
 
-          expected_errors == actual_errors
+          @expected_errors == @actual_errors
+        end
+
+        failure_message do |*|
+          %{Expected errors #{@expected_errors.inspect} but was #{@actual_errors.inspect}}
         end
 
         # TODO: failure_message
