@@ -52,7 +52,7 @@ describe RSpec::Trailblazer do
     end
 
     # DISCUSS: coloring of expected/actual in error msg?
-    it "fails) with non-matching manual expected attributes. FIXME: {assert_exposes} is still called" do
+    it "fails) with non-matching manual expected attributes." do
       expect {
         expect(run({title: ""})).to pass_with({duration: 144}) # fails
       }.to fail_with(%{   {Trailblazer::Test::Testing::Song::Operation::Create} failed: \e[33m{:title=>["must be filled"]}\e[0m
