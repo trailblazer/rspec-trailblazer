@@ -15,12 +15,13 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "rspec"
-  spec.add_dependency "trailblazer-test"
+  spec.add_dependency "trailblazer-test", ">= 1.0.0", "< 1.1.0"
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
 
   spec.add_development_dependency "trailblazer-operation"
   spec.add_development_dependency "trailblazer-macro"
   spec.add_development_dependency "trailblazer-macro-contract"
+  spec.add_development_dependency "trailblazer-core-utils"
   spec.add_development_dependency "dry-validation"
 end

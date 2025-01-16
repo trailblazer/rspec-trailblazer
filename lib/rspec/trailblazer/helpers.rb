@@ -2,8 +2,8 @@ module RSpec
   module Trailblazer
     module Helpers
       # Note that {run} currently returns **an array** of all involved data structures.
-      def run(params_fragment, use_wtf=false, **kws)
-        result, ctx, kws = Assert.call_operation_with(params_fragment, use_wtf, test: self, **kws)
+      def run(operation, ctx, invoke: ::Trailblazer::Test::Assertion.method(:invoke_operation), **kws)
+        signal, ctx = invoke.(operation, ctx) # TODO: in order to use the operation in the matcher block, this should be wrapped in a "result" [operation, ctx, signal, result]. Fuck RSpec.
       end
 
       def Ctx(*args, **kws)
