@@ -47,6 +47,15 @@ describe "Basic assertions without any Suite behavior" do
       expect(run(Memo::Operation::Create, {params: {memo: {title: "Reminder", content: "Do not forget"}}})).to pass_with(title: "Reminder")
     end
 
+    it "fails with error message" do
+      skip "how to test failing assertions?"
+      expect(run(Memo::Operation::Create, {params: {memo: {title: "", content: ""}}})).to pass_with(title: "Reminder")
+    end
+
+    it "fail_with" do
+      expect(run(Memo::Operation::Create, {params: {memo: {title: "", content: ""}}})).to fail_with_errors([:title, :content])
+    end
+
     # TODO: {#run?}
     #        Ctx()
   end
