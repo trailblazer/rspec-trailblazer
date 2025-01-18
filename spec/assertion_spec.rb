@@ -69,9 +69,11 @@ describe "Basic assertions without any Suite behavior" do
     let(:key_in_params) { :memo }
 
     it "provides #run that merges input automatically" do
-      result = run({content: "Almost out of beer"})
+      signal, result = run({content: "Almost out of beer"}) # DISCUSS: what to return?
 
-      raise result.inspect
+      # raise result.inspect
+      expect(result).to be_success
+      expect(result[:captured]).to eq(%({:params=>{:memo=>{:title=>\"Reminder\", :content=>\"Almost out of beer\"}}}))
     end
   end
 end
