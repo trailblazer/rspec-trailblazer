@@ -59,4 +59,19 @@ describe "Basic assertions without any Suite behavior" do
     # TODO: {#run?}
     #        Ctx()
   end
+
+  describe "Suite" do
+    include RSpec::Trailblazer::Helpers
+    include RSpec::Trailblazer::Helpers::Suite # FIXME: abstract into RSpec::Trailblazer.module!(self, suite: true)
+
+    let(:operation) { Memo::Operation::Create }
+    let(:default_ctx) { {params: {memo: {title: "Reminder"}}} }
+    let(:key_in_params) { :memo }
+
+    it "provides #run that merges input automatically" do
+      result = run({content: "Almost out of beer"})
+
+      raise result.inspect
+    end
+  end
 end

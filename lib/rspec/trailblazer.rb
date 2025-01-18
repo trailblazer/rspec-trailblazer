@@ -6,6 +6,8 @@ require "rspec/trailblazer/helpers"
 
 module RSpec
   module Trailblazer
-    # Assert = ::Trailblazer::Test::Assertion
+    module Test # this is easier to remember
+      Assert = ::Trailblazer::Test::Assertion
+    end
   end
 end

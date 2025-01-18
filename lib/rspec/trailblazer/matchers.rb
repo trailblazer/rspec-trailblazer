@@ -1,7 +1,5 @@
 module RSpec
   module Trailblazer
-    Assert = ::Trailblazer::Test::Assertion
-
     # FIXME: this probably shouldn't be here?
     module PassAndPassWith
       def pass_with(args)
@@ -26,7 +24,7 @@ module RSpec
 
           # The {HaveAttributes} matcher's error message is not very readable.
           # RSpec::Matchers::BuiltIn::HaveAttributes.new(expected_attributes).matches?(actual_model)
-          passed, _ = Assert::AssertExposes::Assert.assert_attributes(actual_model, expected_attributes, reader: nil) do |_, last_failed|
+          passed, _ = Test::Assert::AssertExposes::Assert.assert_attributes(actual_model, expected_attributes, reader: nil) do |_, last_failed|
             name, expected_value, actual_value, passed, is_eq, error_msg = last_failed
 
             @error_msg = %{#{error_msg}: Expected #{expected_value.inspect} but was #{actual_value.inspect}}
@@ -44,7 +42,7 @@ module RSpec
       # to pass()
       RSpec::Matchers.define :pass do |expected|
         match do |(signal, result)|
-          required_outcome, actual_outcome = Assert::AssertPass.arguments_for_assert_pass(signal)
+          required_outcome, actual_outcome = Test::Assert::AssertPass.arguments_for_assert_pass(signal)
 
           required_outcome == actual_outcome
         end
@@ -52,13 +50,13 @@ module RSpec
         # supports_block_expectations
 
         failure_message do |(signal, result)|
-          Assert::AssertPass.error_message_for_assert_pass(signal, result, operation: nil) # TODO: where do we get the operation from? Rspec makes it really hard.
+          Test::Assert::AssertPass.error_message_for_assert_pass(signal, result, operation: nil) # TODO: where do we get the operation from? Rspec makes it really hard.
         end
       end
 
       RSpec::Matchers.define :_fail do |expected|
         match do |(signal, result)|
-          required_outcome, actual_outcome = Assert::AssertFail.arguments_for_assert_fail(signal)
+          required_outcome, actual_outcome = Test::Assert::AssertFail.arguments_for_assert_fail(signal)
 
           required_outcome == actual_outcome
         end
@@ -70,7 +68,7 @@ module RSpec
 
       RSpec::Matchers.define :_fail_with_errors do |expected_errors|
         match do |(signal, result)|
-          @expected_errors, @actual_errors = Assert::AssertFail.arguments_for_assert_contract_errors(signal, result, contract_name: :default, expected_errors: expected_errors)
+          @expected_errors, @actual_errors = Test::Assert::AssertFail.arguments_for_assert_contract_errors(signal, result, contract_name: :default, expected_errors: expected_errors)
 
           @expected_errors == @actual_errors
         end
