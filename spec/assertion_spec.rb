@@ -48,7 +48,8 @@ describe "Basic assertions without any Suite behavior" do
     end
 
     it "fails with error message" do
-      skip "how to test failing assertions?"
+      # skip "how to test failing assertions?"
+      # FIXME: this crashes, how can we test that?
       expect(run(Memo::Operation::Create, {params: {memo: {title: "", content: ""}}})).to pass_with(title: "Reminder")
     end
 
@@ -63,13 +64,14 @@ describe "Basic assertions without any Suite behavior" do
   describe "Suite" do
     include RSpec::Trailblazer::Helpers
     include RSpec::Trailblazer::Helpers::Suite # FIXME: abstract into RSpec::Trailblazer.module!(self, suite: true)
+    include RSpec::Trailblazer::Matchers::Suite::PassAndPassWith
 
     let(:operation) { Memo::Operation::Create }
     let(:default_ctx) { {params: {memo: {title: "Reminder"}}} }
     let(:expected_attributes) { {title: "Reminder"} }
     let(:key_in_params) { :memo }
 
-    it "provides #run that merges input automatically" do
+    it "provides {#run} that merges input automatically" do
       signal, result = run({content: "Almost out of beer"}) # DISCUSS: what to return?
 
       # raise result.inspect
@@ -80,7 +82,7 @@ describe "Basic assertions without any Suite behavior" do
     it "merges expected_attributes" do
       _, result = run({content: "Almost out of beer"})
 
-      expect([_, result]).to pass_with(content: "Almost out of beer")
+      expect([_, result]).to pass_with({content: "Almost out of beer"})
 
       # this tests that {:content} was merged.
       expect(result[:captured]).to eq(%({:params=>{:memo=>{:title=>\"Reminder\", :content=>\"Almost out of beer\"}}}))

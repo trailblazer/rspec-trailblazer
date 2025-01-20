@@ -29,7 +29,6 @@ module RSpec
             name, expected_value, actual_value, passed, is_eq, error_msg = last_failed
 
             error_msg = %{#{error_msg}: Expected #{expected_value.inspect} but was #{actual_value.inspect}}
-
             return false, error_msg
           end
 
@@ -44,7 +43,7 @@ module RSpec
       RSpec::Matchers.define :_pass_with do |expected_attributes|
 
         match do |(signal, ctx)|
-          # TODO: allow overriding the "AssertExposes" assertion, in case people want {matches}.
+          # TODO: allow overriding the "AssertExposes" assertion, in case people want {matches()}.
           outcome, @error_msg = Assertion::PassedWithAttributes.new.call(signal, ctx, expected_attributes: expected_attributes)
           outcome
         end
