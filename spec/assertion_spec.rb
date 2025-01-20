@@ -66,6 +66,7 @@ describe "Basic assertions without any Suite behavior" do
 
     let(:operation) { Memo::Operation::Create }
     let(:default_ctx) { {params: {memo: {title: "Reminder"}}} }
+    let(:expected_attributes) { {title: "Reminder"} }
     let(:key_in_params) { :memo }
 
     it "provides #run that merges input automatically" do
@@ -74,6 +75,32 @@ describe "Basic assertions without any Suite behavior" do
       # raise result.inspect
       expect(result).to be_success
       expect(result[:captured]).to eq(%({:params=>{:memo=>{:title=>\"Reminder\", :content=>\"Almost out of beer\"}}}))
+    end
+
+    it "merges expected_attributes" do
+      _, result = run({content: "Almost out of beer"})
+
+      expect([_, result]).to pass_with(content: "Almost out of beer")
+
+      # this tests that {:content} was merged.
+      expect(result[:captured]).to eq(%({:params=>{:memo=>{:title=>\"Reminder\", :content=>\"Almost out of beer\"}}}))
+
+      # this tests that at least the OP did what we want.
+      # Here, we still don't know if the internal expected_attributes assertions were being applied.
+      expect(CU.inspect(result[:model].to_h.slice(:content, :title))).to eq(%({:content=>\"Almost out of beer\", :title=>\"Reminder\"}))
+    end
+
+    it "complains if {expected_attributes} don't match" do
+      _, result = run({title: "TOTO", content: "I bless the rain down"})
+
+      # this breaks as expected_attributes[:title] and the passed title mismatch.
+      expect([_, result]).to pass_with({}) # TODO; how to test a failing test?
+    end
+
+    # TODO: {pass_with ..., model_at: :memo}
+
+    it "{#fail_with_errors}" do
+
     end
   end
 end
