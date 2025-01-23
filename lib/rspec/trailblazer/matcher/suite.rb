@@ -14,7 +14,7 @@ module RSpec
         # pass_with()
         RSpec::Matchers.define :_suite_pass_with do |expected_attributes|
           match do |(signal, ctx)|
-            test_suite = ::Trailblazer::Test::Assertion::Suite
+            test_suite = ::Trailblazer::Test::Suite
 
             kws = test_suite::Assert.normalize_kws_for_model_assertion(test: self) # TODO: allow {:model_at} keyword.
 

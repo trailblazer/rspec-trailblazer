@@ -25,7 +25,7 @@ module RSpec
       # RSpec::Matchers::BuiltIn::HaveAttributes.new(expected_attributes).matches?(actual_model)
       class PassedWithAttributes < ::Trailblazer::Test::Assertion::AssertPass::PassedWithAttributes
         def assertion(ctx, model:, expected_attributes:, **)
-          Test::Assert::AssertExposes::Assert.assert_attributes(model, expected_attributes, reader: nil) do |_, last_failed|
+          ::Trailblazer::Test::Assertion::AssertExposes::Assert.assert_attributes(model, expected_attributes, reader: nil) do |_, last_failed|
             name, expected_value, actual_value, passed, is_eq, error_msg = last_failed
 
             error_msg = %{#{error_msg}: Expected #{expected_value.inspect} but was #{actual_value.inspect}}
@@ -70,7 +70,7 @@ module RSpec
 
       RSpec::Matchers.define :_fail do |expected|
         match do |(signal, ctx)|
-          required_outcome, actual_outcome = Test::Assert::AssertFail.arguments_for_assert_fail(signal)
+          required_outcome, actual_outcome = ::Trailblazer::Test::Assertion::AssertFail.arguments_for_assert_fail(signal)
 
           required_outcome == actual_outcome
         end
@@ -82,7 +82,7 @@ module RSpec
 
       RSpec::Matchers.define :_fail_with_errors do |expected_errors|
         match do |(signal, ctx)|
-          @expected_errors, @actual_errors = Test::Assert::AssertFail.arguments_for_assert_contract_errors(signal, ctx, contract_name: :default, expected_errors: expected_errors)
+          @expected_errors, @actual_errors = ::Trailblazer::Test::Assertion::AssertFail.arguments_for_assert_contract_errors(signal, ctx, contract_name: :default, expected_errors: expected_errors)
 
           @expected_errors == @actual_errors
         end

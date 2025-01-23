@@ -58,9 +58,10 @@ describe "Basic assertions without any Suite behavior" do
       expect(run(Memo::Operation::Create, {params: {memo: {title: "", content: ""}}})).to fail_with_errors([:title, :content])
     end
 
-    # TODO: {#run?}
+    # TODO: {#run?} with #wtf?.
     #        run(key: "word") without a hash
     #        Ctx()
+    # TODO: {pass_with ..., model_at: :memo}
   end
 
   describe "Suite" do
@@ -100,8 +101,6 @@ describe "Basic assertions without any Suite behavior" do
 # this breaks as expected_attributes[:title] and the passed title mismatch.
       expect([_, result]).to pass_with({}) # TODO; how to test a failing test?
     end
-
-    # TODO: {pass_with ..., model_at: :memo}
 
     it "{#fail_with_errors}" do
       expect(run({params: {memo: {title: "", content: ""}}})).to fail_with_errors([:content])
